@@ -1,8 +1,11 @@
 import * as React from "react";
-import { Image, StyleSheet } from "react-native";
+import { Image, StyleSheet, View, Text } from "react-native";
 import { Audio, AVPlaybackStatus } from "expo-av";
 
+import { TypedUseSelectorHook, useSelector, useDispatch } from "react-redux";
 import PlayerControls from "./PlayControls";
+
+import { Meditation, meditations } from "../../data/meditations";
 
 // import { useAppSelector, useMeditation } from "../../hooks";
 // import NotFoundScreen from '../NotFoundScreen'
@@ -15,21 +18,32 @@ import { useCallback } from "react";
 import { StackNavigationProp } from "@react-navigation/stack";
 // import { selectFavourites, selectFilePaths } from '../../redux/selectors'
 // import FavouriteButton from '../../components/FavouriteButton'
-import { Meditation } from "../../data/meditations";
 
-// type PlayRouteProp = RouteProp<HomeParamList, 'PlayScreen'>
+export default function Play({ id, navigation }) {
+  // function useMeditation(id) {
+  //   console.log(id);
+  //   const arr = Object.values(meditations).flat();
+  //   const meditation = arr.find((m) => m.id === id);
 
-// type PlayNavProp = CompositeNavigationProp<
-//   StackNavigationProp<HomeParamList, 'PlayScreen'>,
-//   StackNavigationProp<MainStackParamList>
-// >
-// interface Props {
-//   navigation: PlayNavProp
-//   route: PlayRouteProp
-// }
-export default function Play({ id }) {
+  //   return meditation;
+  // }
+
   // const { id } = route.params;
-  //   const meditation = useMeditation(id);
+  //const meditation = useMeditation(id);
+  // const meditation = "ff171f80-5960-41e7-965c-1f9bcf31e02c";
+  const uri = "https://goofy-ritchie-dd0c3d.netlify.app/meditations/17.mp3";
+
+  const meditation = {
+    id: "ff171f80-5960-41e7-965c-1f9bcf31e02c",
+    order: 1,
+    title: "Power of Love",
+    track: 0,
+    subtitle: "Love and Peace",
+    time: 2,
+    uri: "https://goofy-ritchie-dd0c3d.netlify.app/meditations/17.mp3",
+    image: require("../../assets/meditate.jpg"),
+  };
+
   //   const favourites = useAppSelector(selectFavourites);
   const [isLoadingAudio, setIsLoadingAudio] = React.useState(true);
   const [isPlaying, setIsPlaying] = React.useState(false);
@@ -38,15 +52,49 @@ export default function Play({ id }) {
   const [durationMills, setDurationMills] = React.useState(0);
   const durationTime = useMsToTime(durationMills);
   const positionTime = useMsToTime(positionMillis);
-  const dispatch = useAppDispatch();
-  const uri = meditation?.uri || "";
-  //   const filepaths = useAppSelector(selectFilePaths);
+  const dispatch = useDispatch();
+  //const uri = meditation?.uri || "";
+  // const filepaths = useSelector(selectFilePaths);
 
-  //   const isFavourited = favourites.some((item) => item.id === meditation?.id);
+  // const isFavourited = favourites.some((item) => item.id === meditation?.id);
 
-  //   const onFavourite = () => {
-  //     dispatch(updateFavourite(meditation));
-  //   };
+  // const onFavourite = () => {
+  //   dispatch(updateFavourite(meditation));
+  // };
+
+  function formatToString(n) {
+    return n < 10 ? `0${n}` : n;
+  }
+
+  function useMsToTime(s) {
+    const ms = s % 1000;
+    s = (s - ms) / 1000;
+    const secs = s % 60;
+    s = (s - secs) / 60;
+    const mins = s % 60;
+    const minsString = formatToString(mins);
+    const secsString = formatToString(secs);
+
+    return minsString + ":" + secsString;
+  }
+
+  function useMsToMinutes(ms) {
+    const minutes = Math.floor(ms / 60000);
+
+    return minutes;
+  }
+  function useMinutesToStatsTime(minutes) {
+    const h = Math.floor(minutes / 60);
+    const m = minutes % 60;
+
+    if (h && m) {
+      return `${h}h ${m}m`;
+    } else if (h) {
+      return `${h} hour${h === 1 ? "" : "s"}`;
+    } else {
+      return `${m} minute${m === 1 ? "" : "s"}`;
+    }
+  }
 
   const onPlaybackStatusUpdate = useCallback(
     (playbackStatus) => {
@@ -114,7 +162,7 @@ export default function Play({ id }) {
     };
 
     loadAudio();
-  }, [onPlaybackStatusUpdate, uri, filepaths]);
+  }, [onPlaybackStatusUpdate, uri]);
 
   const replay = async () => {
     await sound?.setPositionAsync(positionMillis - 10 * 1000);
@@ -139,7 +187,11 @@ export default function Play({ id }) {
   };
 
   if (!meditation) {
-    return <NotFoundScreen />;
+    return (
+      <View>
+        <Text>Not Found Screen</Text>
+      </View>
+    );
   }
 
   const { title, subtitle, image } = meditation;
@@ -150,7 +202,7 @@ export default function Play({ id }) {
   }
 
   return (
-    <Screen style={styles.container}>
+    <View style={styles.container}>
       {/* <FavouriteButton isFavourited={isFavourited} style={styles.favourite} onPress={onFavourite} /> */}
       <Image source={image} style={styles.image} />
       <Text style={styles.title}>{title}</Text>
@@ -164,7 +216,7 @@ export default function Play({ id }) {
         positionTime={positionTime}
         durationTime={durationTime}
       />
-    </Screen>
+    </View>
   );
 }
 

@@ -11,7 +11,7 @@ export default function Home({ navigation }) {
         elevation={1}
         style={styles.card}
         onPress={() =>
-          navigation.navigate("Play", {
+          navigation.navigate("Play2", {
             id: item.id,
           })
         }
@@ -41,7 +41,7 @@ export default function Home({ navigation }) {
       <Card
         style={styles.card}
         onPress={() =>
-          navigation.navigate("PlayScreen", {
+          navigation.navigate("Play2", {
             id: item.id,
           })
         }
