@@ -13,7 +13,6 @@ import RegisterScreen from "./components/auth/Register";
 import MainScreen from "./components/Main";
 import ChatScreen from "./components/main/Chat";
 import PlayScreen from "./components/main/Play";
-import PlayScreen2 from "./components/main/Play2";
 import rootReducer from "./redux/reducers";
 import thunk from "redux-thunk";
 const store = createStore(rootReducer, applyMiddleware(thunk));
@@ -99,14 +98,10 @@ export class App extends Component {
               component={ChatScreen}
               // options={{ headerShown: false }}
             />
+
             <Stack.Screen
               name="Play"
               component={PlayScreen}
-              // options={{ headerShown: false }}
-            />
-            <Stack.Screen
-              name="Play2"
-              component={PlayScreen2}
               // options={{ headerShown: false }}
             />
           </Stack.Navigator>

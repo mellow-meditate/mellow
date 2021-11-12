@@ -1,8 +1,9 @@
 import React from "react";
-import { View, Text } from "react-native";
+import { ScrollView, Text } from "react-native";
 import { StyleSheet, FlatList } from "react-native";
 import { Card, Paragraph } from "react-native-paper";
 import { meditations, MeditationItem } from "../../data/meditations";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function Home({ navigation }) {
   const renderPopularCard = ({ item }) => {
@@ -11,17 +12,17 @@ export default function Home({ navigation }) {
         elevation={1}
         style={styles.card}
         onPress={() =>
-          navigation.navigate("Play2", {
+          navigation.navigate("Play", {
             id: item.id,
           })
         }
       >
         <Card.Cover
           style={[styles.cardImage, styles.popularImage]}
-          source={item.image}
+          source={{ uri: item.image }}
         />
         <Card.Title
-          titleStyle={[styles.cardTitle, { color: "gray" }]}
+          titleStyle={[styles.cardTitle]}
           subtitleStyle={styles.cardSubtitle}
           title={item.title}
           subtitle={item.subtitle}
@@ -41,22 +42,20 @@ export default function Home({ navigation }) {
       <Card
         style={styles.card}
         onPress={() =>
-          navigation.navigate("Play2", {
+          navigation.navigate("Play", {
             id: item.id,
           })
         }
       >
-        <Card.Cover style={styles.cardImage} source={item.image} />
+        <Card.Cover style={styles.cardImage} source={{ uri: item.image }} />
         <Card.Title
-          titleStyle={[styles.cardTitle, { color: "gray" }]}
+          titleStyle={[styles.cardTitle]}
           subtitleStyle={styles.cardSubtitle}
           title={item.title}
           subtitle={item.subtitle}
         />
         <Card.Content style={styles.cardContent}>
-          <Paragraph style={styles.cardParagraph}>
-            {item.time} minutes
-          </Paragraph>
+          <Text style={styles.cardParagraph}>{item.time} minutes</Text>
           {/* <DownloadButton id={item.id} style={styles.downloadButton} /> */}
         </Card.Content>
       </Card>
@@ -64,64 +63,88 @@ export default function Home({ navigation }) {
   };
 
   return (
-    <View>
-      <Text style={styles.title}>POPULAR</Text>
-      <FlatList
-        style={styles.cards}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        data={meditations.popular}
-        renderItem={renderPopularCard}
-        keyExtractor={({ id }) => id}
-      />
-      <Text style={styles.title}>ANXIETY</Text>
-      <FlatList
-        style={styles.cards}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        data={meditations.anxiety}
-        renderItem={renderCard}
-        keyExtractor={({ id }) => id}
-      />
-      <Text style={styles.title}>SLEEP</Text>
-      <FlatList
-        style={styles.cards}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        data={meditations.sleep}
-        renderItem={renderCard}
-        keyExtractor={({ id }) => id}
-      />
-      {/* {favourites.length > 0 && (
-        <>
-          <Text style={styles.title}>FAVOURITE</Text>
-          <FlatList
-            style={styles.cards}
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            data={favourites}
-            renderItem={renderCard}
-            keyExtractor={({ id }) => id}
-          />
-        </>
-      )} */}
-    </View>
+    <ScrollView style={styles.view}>
+      <LinearGradient
+        colors={["#000428", "#004e92"]}
+        style={styles.background}
+        start={[1, 1]}
+      >
+        <Text style={styles.title}>POPULAR</Text>
+        <FlatList
+          style={styles.cards}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          data={meditations.popular}
+          renderItem={renderPopularCard}
+          keyExtractor={({ id }) => id}
+        />
+        <Text style={styles.title}>ANXIETY</Text>
+        <FlatList
+          style={styles.cards}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          data={meditations.anxiety}
+          renderItem={renderCard}
+          keyExtractor={({ id }) => id}
+        />
+        <Text style={styles.title}>SLEEP</Text>
+        <FlatList
+          style={styles.cards}
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          data={meditations.sleep}
+          renderItem={renderCard}
+          keyExtractor={({ id }) => id}
+        />
+      </LinearGradient>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  background: {
+    height: "100%",
+    paddingLeft: 17,
+  },
+  view: {
+    // background: #000428;
+    // background: -webkit-linear-gradient(to right, #004e92, #000428);
+    // background: linear-gradient(to right, #004e92, #000428);
+  },
   card: {
+    backgroundColor: "transparent",
     width: 250,
-    marginRight: 10,
+    marginRight: 30,
+    height: 220,
+    borderWidth: 0, // Remove Border
+
+    shadowColor: "rgba(0,0,0, 0.0)", // Remove Shadow for iOS
+    shadowOffset: { height: 0, width: 0 },
+    shadowOpacity: 0,
+    shadowRadius: 0,
+
+    elevation: 0, // Remove Shadow for Android
+    borderRadius: 20,
   },
   cardTitle: {
-    fontSize: 16,
+    marginLeft: -10,
+    marginTop: -15,
+    color: "white",
+    fontSize: 15,
   },
   cardImage: {
-    height: 135,
+    height: 150,
+    width: 250,
+    borderRadius: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
   popularImage: {
-    height: 250,
+    height: 150,
+    width: 250,
+    borderRadius: 20,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
   cardContent: {
     flex: 1,
@@ -130,12 +153,17 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
   },
   cardSubtitle: {
-    color: "gray",
-    fontSize: 14,
+    color: "white",
+    fontSize: 12,
+    marginTop: -5,
+    marginLeft: -10,
   },
   cardParagraph: {
-    color: "gray",
-    fontWeight: "600",
+    color: "white",
+    fontWeight: "100",
+    fontSize: 12,
+    marginTop: -20,
+    marginLeft: -10,
   },
   downloadButton: {
     position: "relative",
@@ -145,8 +173,10 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   title: {
+    marginTop: 15,
     fontSize: 16,
     fontWeight: "bold",
     marginBottom: 19,
+    color: "white",
   },
 });

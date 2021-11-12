@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { connect } from "react-redux";
 import { bindActionCreators } from "redux";
 import { fetchUser } from "../redux/actions/index";
@@ -7,6 +7,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeScreen from "./main/Home";
 import ProfileScreen from "./main/Profile";
 import TeamsScreen from "./main/Teams";
+import { LinearGradient } from "expo-linear-gradient";
 
 import { MaterialCommunityIcons } from "react-native-vector-icons";
 
@@ -22,7 +23,17 @@ export class Main extends Component {
   }
   render() {
     return (
-      <Tab.Navigator>
+      <Tab.Navigator
+        tabBarOptions={{
+          activeTintColor: "white",
+          inactiveTintColor: "grey",
+          activeBackgroundColor: "#000428",
+          inactiveBackgroundColor: "#000428",
+        }}
+        navigationOptions={{
+          backgroundColor: "#000428",
+        }}
+      >
         <Tab.Screen
           name="Home"
           component={HomeScreen}
@@ -83,5 +94,9 @@ const mapStateToProps = (store) => ({
 
 const mapDispatchProps = (dispatch) =>
   bindActionCreators({ fetchUser }, dispatch);
+
+const styles = StyleSheet.create({
+  tab: {},
+});
 
 export default connect(mapStateToProps, mapDispatchProps)(Main);

@@ -31,7 +31,7 @@ export const popular = [
     subtitle: "Love and Peace",
     time: 2,
     uri: "https://goofy-ritchie-dd0c3d.netlify.app/meditations/17.mp3",
-    image: require("../assets/meditate.jpg"),
+    image: "https://cdn.wallpapersafari.com/89/41/uyimCn.jpg",
   },
   {
     id: "ff171f80-5960-41e7-965c-1f9bcf31e02d",
@@ -41,7 +41,7 @@ export const popular = [
     subtitle: "Busy At Work",
     time: 5,
     uri: "https://goofy-ritchie-dd0c3d.netlify.app/meditations/1.mp3",
-    image: require("../assets/meditate.jpg"),
+    image: "https://cdn.wallpapersafari.com/89/41/uyimCn.jpg",
   },
   {
     id: "ff171f80-5960-41e7-965c-1f9bcf31e02e",
@@ -51,7 +51,7 @@ export const popular = [
     subtitle: "Just Breath",
     time: 5,
     uri: "https://goofy-ritchie-dd0c3d.netlify.app/meditations/2.mp3",
-    image: require("../assets/meditate.jpg"),
+    image: "https://cdn.wallpapersafari.com/89/41/uyimCn.jpg",
   },
   {
     id: "ff171f80-5960-41e7-965c-1f9bcf31e02f",
@@ -61,7 +61,7 @@ export const popular = [
     track: 3,
     time: 5,
     uri: "https://goofy-ritchie-dd0c3d.netlify.app/meditations/3.mp3",
-    image: require("../assets/meditate.jpg"),
+    image: "https://cdn.wallpapersafari.com/89/41/uyimCn.jpg",
   },
 ];
 
@@ -74,7 +74,8 @@ export const anxiety = [
     subtitle: "Release Anxiety",
     time: 10,
     uri: "https://goofy-ritchie-dd0c3d.netlify.app/meditations/4.mp3",
-    image: require("../assets/meditate.jpg"),
+    image:
+      "https://www.pixelstalk.net/wp-content/uploads/2016/08/Beautiful-High-Quality-Backgrounds-Free-Download.jpg",
   },
   {
     id: "ff171f80-5960-41e7-965c-1f9bcf31e031",
@@ -84,7 +85,8 @@ export const anxiety = [
     track: 7,
     time: 11,
     uri: "https://goofy-ritchie-dd0c3d.netlify.app/meditations/7.mp3",
-    image: require("../assets/meditate.jpg"),
+    image:
+      "https://www.pixelstalk.net/wp-content/uploads/2016/08/Beautiful-High-Quality-Backgrounds-Free-Download.jpg",
   },
   {
     id: "ff171f80-5960-41e7-965c-1f9bcf31e032",
@@ -94,7 +96,8 @@ export const anxiety = [
     track: 8,
     time: 11,
     uri: "https://goofy-ritchie-dd0c3d.netlify.app/meditations/8.mp3",
-    image: require("../assets/meditate.jpg"),
+    image:
+      "https://www.pixelstalk.net/wp-content/uploads/2016/08/Beautiful-High-Quality-Backgrounds-Free-Download.jpg",
   },
 ];
 
@@ -107,7 +110,7 @@ export const sleep = [
     track: 5,
     time: 8,
     uri: "https://goofy-ritchie-dd0c3d.netlify.app/meditations/5.mp3",
-    image: require("../assets/meditate.jpg"),
+    image: "https://cdn.wallpapersafari.com/40/35/OTXKP0.jpg",
   },
   {
     id: "ff171f80-5960-41e7-965c-1f9bcf31e034",
@@ -117,7 +120,7 @@ export const sleep = [
     track: 6,
     time: 28,
     uri: "https://goofy-ritchie-dd0c3d.netlify.app/meditations/6.mp3",
-    image: require("../assets/meditate.jpg"),
+    image: "https://cdn.wallpapersafari.com/40/35/OTXKP0.jpg",
   },
   {
     id: "ff171f80-5960-41e7-965c-1f9bcf31e035",
@@ -127,7 +130,7 @@ export const sleep = [
     subtitle: "Drift Off To Sleep",
     time: 15,
     uri: "https://goofy-ritchie-dd0c3d.netlify.app/meditations/12.mp3",
-    image: require("../assets/meditate.jpg"),
+    image: "https://cdn.wallpapersafari.com/40/35/OTXKP0.jpg",
   },
 ];
 
