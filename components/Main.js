@@ -24,11 +24,11 @@ export class Main extends Component {
   render() {
     return (
       <Tab.Navigator
-        tabBarOptions={{
-          activeTintColor: "white",
-          inactiveTintColor: "grey",
-          activeBackgroundColor: "#000428",
-          inactiveBackgroundColor: "#000428",
+        screenOptions={{
+          tabBarActiveTintColor: "white",
+          tabBarInactiveTintColor: "grey",
+          tabBarActiveBackgroundColor: "#000428",
+          tabBarInactiveBackgroundColor: "#000428",
         }}
         navigationOptions={{
           backgroundColor: "#000428",
