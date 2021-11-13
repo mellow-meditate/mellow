@@ -1,6 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import React, { Component } from "react";
-import { View, Text } from "react-native";
+import { View, Text, LogBox } from "react-native";
 
 import firebase from "firebase/app";
 import "firebase/auth";
@@ -19,6 +19,11 @@ const store = createStore(rootReducer, applyMiddleware(thunk));
 
 import { Provider } from "react-redux";
 import { createStore, applyMiddleware } from "redux";
+import JoinTeam from "./components/main/JoinTeam";
+import CreateTeam from "./components/main/CreateTeam";
+import ViewTeam from "./components/main/ViewTeam";
+
+LogBox.ignoreLogs(['Setting a timer for a long period of time'])
 
 const firebaseConfig = {
   apiKey: "AIzaSyAZouq-DJIPWhZdZyLeOM5caDCVfLLKyrQ",
@@ -30,10 +35,9 @@ const firebaseConfig = {
   measurementId: "G-NCF660YNLZ",
 };
 
-// if (toString(firebase.apps).length === 0) {
-//   firebase.initializeApp(firebaseConfig);
-// }
-firebase.initializeApp(firebaseConfig);
+// Fixed: Firebase app duplication
+if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+else firebase.app();
 
 const Stack = createStackNavigator();
 
@@ -94,15 +98,30 @@ export class App extends Component {
               options={{ headerShown: false }}
             />
             <Stack.Screen
+              name="JoinTeam"
+              component={JoinTeam}
+              options={{ title: 'Join Team' }}
+            />
+            <Stack.Screen
+              name="CreateTeam"
+              component={CreateTeam}
+              options={{ title: 'Create Team' }}
+            />
+            <Stack.Screen
+              name="ViewTeam"
+              component={ViewTeam}
+              options={{ title: 'Team' }}
+            />
+            <Stack.Screen
               name="Chat"
               component={ChatScreen}
-              // options={{ headerShown: false }}
+            // options={{ headerShown: false }}
             />
 
             <Stack.Screen
               name="Play"
               component={PlayScreen}
-              // options={{ headerShown: false }}
+            // options={{ headerShown: false }}
             />
           </Stack.Navigator>
         </NavigationContainer>
