@@ -6,7 +6,7 @@ export default function ({ route }) {
   const { team } = route.params;
   return (
     <View style={styles.view}>
-      <Image style={styles.image} source={{ uri: team.image }} resizeMode="cover" />
+      <Image style={styles.image} source={{ uri: team.imageURL }} resizeMode="cover" />
       <View style={styles.nameView}>
         <Text style={styles.name}>{team.name}</Text>
       </View>
@@ -14,7 +14,7 @@ export default function ({ route }) {
       <View style={{ paddingHorizontal: 16 }}>
         <Text>{team.description}</Text>
         <View style={{ alignItems: "center", marginBottom: 24 }}>
-          <Text style={styles.amount}>Rs. {team.amountRaised}</Text>
+          <Text style={styles.amount}>Rs. {team.amountRaised || 'Nil'}</Text>
           <Text style={styles.raised}>raised so far</Text>
 
           <View style={styles.row}>
@@ -23,16 +23,16 @@ export default function ({ route }) {
                 <Icon name="user-friends" size={16} color="#222" style={{ marginRight: 4 }} />
                 <Text style={styles.cardTitle}>Members</Text>
               </View>
-              <Text>{team.memberCount}</Text>
+              <Text>{team.members.length}</Text>
             </View>
 
-            <View style={styles.card}>
+            {/* <View style={styles.card}>
               <View style={styles.line}>
                 <Icon name="user" solid size={16} color="#222" style={{ marginRight: 4 }} />
                 <Text style={styles.cardTitle}>Creator</Text>
               </View>
               <Text>{team.creator.name}</Text>
-            </View>
+            </View> */}
           </View>
 
           <TouchableOpacity style={styles.inviteView} onPress={() => {

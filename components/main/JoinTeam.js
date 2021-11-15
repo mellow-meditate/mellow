@@ -2,26 +2,54 @@ import React, { useState, useEffect } from "react";
 import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, TouchableWithoutFeedback, Modal, ToastAndroid } from "react-native";
 
 import Icon from "react-native-vector-icons/FontAwesome5";
-import { allTeams } from '../../data/mockTeams';
 import { Searchbar } from 'react-native-paper';
+import firebase from "firebase";
 
-
-const useMockFetch = () => {
+const useTeams = () => {
   const [loading, setLoading] = useState(true);
-  const error = null;
+  const [error, setError] = useState(null);
+  const [teams, setTeams] = useState([]);
 
-  // Fake loading delay of 1s
+
   useEffect(() => {
-    return setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-  }, []);
+    firebase
+      .firestore()
+      .collection("teams")
+      .get()
+      .then(querySnapshot => {
+        querySnapshot.docs.forEach(doc => {
+          setTeams((currentTeams) => [...currentTeams, { ...doc.data(), id: doc.id }]);
+        });
+        setLoading(false);
+      })
+      .catch(err => {
+        console.log(error)
+        setLoading(false);
+        setError(err);
+      });
+  }, [])
 
-  const teams = allTeams;
   return [teams, loading, error];
 }
 
 const TeamModal = ({ team, setModalVisible }) => {
+  const handleJoinTeam = (team) => {
+    firebase
+      .firestore()
+      .collection("users")
+      .doc(firebase.auth().currentUser.uid)
+      .update({
+        teams: firebase.firestore.FieldValue.arrayUnion(team.id)
+      })
+      .then(() => {
+        ToastAndroid.show('You have joined the team', ToastAndroid.SHORT);
+        setModalVisible(false);
+      })
+      .catch(err => {
+        console.log(err);
+        ToastAndroid.show('Error joining team', ToastAndroid.SHORT);
+      });
+  };
 
   return (
     <TouchableWithoutFeedback onPress={() => {
@@ -33,26 +61,24 @@ const TeamModal = ({ team, setModalVisible }) => {
             <TouchableOpacity style={teamModalStyles.close} onPress={() => setModalVisible((curVisible) => !curVisible)}>
               <Icon style={teamModalStyles.close} name="times" size={20} color="#222" />
             </TouchableOpacity>
-            <Image style={teamModalStyles.image} source={{ uri: team.image }} />
+            <Image style={teamModalStyles.image} source={{ uri: team.imageURL }} />
             <Text style={teamModalStyles.name}>{team.name}</Text>
 
             <View style={teamModalStyles.row}>
               <View style={teamModalStyles.row}>
                 <Icon name="user-friends" size={16} color="#222" style={{ marginRight: 4 }} />
-                <Text style={teamStyles.memberCount}>{team.memberCount}</Text>
+                <Text style={teamStyles.memberCount}>{team.members.length}</Text>
               </View>
 
-              <View style={teamModalStyles.row}>
+              {/* <View style={teamModalStyles.row}>
                 <Icon name="user" solid size={16} color="#222" style={{ marginRight: 4 }} />
                 <Text style={teamModalStyles.creator}>{team.creator.name}</Text>
-              </View>
+              </View> */}
             </View>
 
             <Text style={teamModalStyles.description}>{team.description}</Text>
-            <Text style={teamModalStyles.amount}>Rs.{team.amountRaised} raised</Text>
-            <TouchableOpacity onPress={() => {
-              ToastAndroid.show("You joined the team with id: " + team.id, ToastAndroid.SHORT);
-            }}>
+            <Text style={teamModalStyles.amount}>Rs.{team.amountRaised || "Nil"} raised</Text>
+            <TouchableOpacity onPress={() => handleJoinTeam(team)}>
               <View style={teamModalStyles.join}>
                 <Text style={teamModalStyles.joinText}>Join Team</Text>
               </View>
@@ -65,7 +91,7 @@ const TeamModal = ({ team, setModalVisible }) => {
 }
 
 export default function () {
-  const [teams, loading, error] = useMockFetch();//useFetch("TEAMS_API_URL");
+  const [teams, loading, error] = useTeams();//useFetch("TEAMS_API_URL");
   const [searchQuery, setSearchQuery] = useState('');
   const onChangeSearch = query => setSearchQuery(query);
   const [selectedTeam, setSelectedTeam] = useState({});
@@ -103,9 +129,9 @@ export default function () {
               setModalVisible(true);
             }}>
               <View style={teamStyles.team}>
-                <Image source={{ uri: item.image }} style={teamStyles.image} />
+                <Image source={{ uri: item.imageURL }} style={teamStyles.image} />
                 <Text style={teamStyles.name}>{item.name}</Text>
-                <Text style={teamStyles.memberCount}>{item.memberCount}</Text>
+                <Text style={teamStyles.memberCount}>{item.members.length}</Text>
                 <Icon name="user-friends" size={16} color="#222" />
               </View>
             </TouchableOpacity>
@@ -159,7 +185,8 @@ const teamStyles = StyleSheet.create({
     flexGrow: 1
   },
   memberCount: {
-    marginRight: 8
+    marginLeft: 8,
+    fontSize: 16,
   }
 });
 
@@ -201,7 +228,8 @@ const teamModalStyles = StyleSheet.create({
   description: {
     alignSelf: "flex-start",
     marginBottom: 16,
-    marginTop: 16
+    marginTop: 16,
+    fontSize: 14
   },
   creator: {
     fontSize: 12,
