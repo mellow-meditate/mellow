@@ -4,6 +4,7 @@ import { Bubble, GiftedChat } from "react-native-gifted-chat";
 
 import { Dialogflow_V2 } from "react-native-dialogflow";
 import { dialogflowConfig } from "../../env";
+import { LinearGradient } from "expo-linear-gradient";
 
 const BOT = {
   _id: 2,
