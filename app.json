@@ -1,5 +1,6 @@
 {
   "expo": {
+    "owner": "mellow-meditate",
     "name": "mellow",
     "slug": "mellow",
     "version": "1.0.0",

@@ -15,12 +15,24 @@ export class Register extends Component {
       email: "",
       password: "",
       name: "",
+      donations: 0,
+      meditations: 0,
+      chatbotConvs: 0,
+      image: "",
     };
     this.onSignUp = this.onSignUp.bind(this);
   }
 
   onSignUp() {
-    const { email, password, name } = this.state;
+    const {
+      email,
+      password,
+      name,
+      donations,
+      meditations,
+      chatbotConvs,
+      image,
+    } = this.state;
     firebase
       .auth()
       .createUserWithEmailAndPassword(email, password)
@@ -32,6 +44,10 @@ export class Register extends Component {
           .set({
             name,
             email,
+            donations,
+            meditations,
+            chatbotConvs,
+            image,
           });
         console.log(result);
       })

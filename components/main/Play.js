@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
+import { useDispatch } from "react-redux";
 import { StyleSheet, Text, View, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { Audio } from "expo-av";
@@ -7,6 +8,8 @@ import { LinearGradient } from "expo-linear-gradient";
 
 export default function Play({ route, navigation }) {
   const { id } = route.params;
+
+  const dispatch = useDispatch();
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [playbackObject, setPlaybackObject] = useState(null);
@@ -71,8 +74,26 @@ export default function Play({ route, navigation }) {
   useEffect(() => {
     if (playbackObject === null) {
       setPlaybackObject(new Audio.Sound());
+    } else {
+      playbackObject.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
     }
-  }, []);
+  }, [onPlaybackStatusUpdate]);
+
+  const onPlaybackStatusUpdate = useCallback(
+    (playbackStatus) => {
+      if (!playbackStatus.isLoaded) {
+        // Update your UI for the unloaded state
+      } else {
+        // Update your UI for the loaded state
+
+        if (playbackStatus.didJustFinish) {
+          setIsPlaying(false);
+          console.log("meditation finished!!!!!!!");
+        }
+      }
+    },
+    [dispatch, navigation]
+  );
 
   const handleAudioPlayPause = async () => {
     if (playbackObject !== null && playbackStatus === null) {
