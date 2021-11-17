@@ -1,24 +1,24 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import {
   View,
   Button,
   TextInput,
   StyleSheet,
   TouchableHighlight,
-} from "react-native";
-import firebase from "firebase";
+} from 'react-native';
+import firebase from 'firebase';
 
 export class Register extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: "",
-      password: "",
-      name: "",
+      email: '',
+      password: '',
+      name: '',
       donations: 0,
       meditations: 0,
       chatbotConvs: 0,
-      image: "",
+      image: '',
     };
     this.onSignUp = this.onSignUp.bind(this);
   }
@@ -39,7 +39,7 @@ export class Register extends Component {
       .then((result) => {
         firebase
           .firestore()
-          .collection("users")
+          .collection('users')
           .doc(firebase.auth().currentUser.uid)
           .set({
             name,
@@ -88,23 +88,23 @@ export default Register;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   inputContainer: {
-    width: "90%",
+    width: '90%',
   },
   input: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     padding: 10,
     borderRadius: 10,
     marginTop: 30,
     marginLeft: 35,
   },
   buttonContainer: {
-    width: "50%",
-    justifyContent: "center",
-    alignItems: "center",
+    width: '50%',
+    justifyContent: 'center',
+    alignItems: 'center',
     marginTop: 40,
     marginLeft: 100,
     borderRadius: 20,

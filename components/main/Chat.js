@@ -1,26 +1,26 @@
-import React, { Component } from "react";
-import { View, Text } from "react-native";
-import { Bubble, GiftedChat } from "react-native-gifted-chat";
+import React, { Component } from 'react';
+import { View, Text } from 'react-native';
+import { Bubble, GiftedChat } from 'react-native-gifted-chat';
 
-import { Dialogflow_V2 } from "react-native-dialogflow";
-import { dialogflowConfig } from "../../env";
-import { LinearGradient } from "expo-linear-gradient";
+import { Dialogflow_V2 } from 'react-native-dialogflow';
+import { dialogflowConfig } from '../../env';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const BOT = {
   _id: 2,
-  name: "Mr.Bot",
+  name: 'Mr.Bot',
   avatar:
-    "https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg",
+    'https://st3.depositphotos.com/15648834/17930/v/600/depositphotos_179308454-stock-illustration-unknown-person-silhouette-glasses-profile.jpg',
 };
 
 class Chat extends Component {
   state = {
     messages: [
-      { _id: 2, text: "My name is Mellow", createdAt: new Date(), user: BOT },
-      { _id: 1, text: "Hi", createdAt: new Date(), user: BOT },
+      { _id: 2, text: 'My name is Mellow', createdAt: new Date(), user: BOT },
+      { _id: 1, text: 'Hi', createdAt: new Date(), user: BOT },
     ],
     id: 1,
-    name: "",
+    name: '',
   };
 
   componentDidMount() {
@@ -39,42 +39,42 @@ class Chat extends Component {
 
   sendBotResponse(text) {
     let msg;
-    if (text == "meditate") {
+    if (text == 'meditate') {
       msg = {
         _id: this.state.messages.length + 1,
-        text: "maybe you should meditate",
+        text: 'maybe you should meditate',
         image:
-          "https://pcdn.columbian.com/wp-content/uploads/2021/06/0615_fea_meditation-1226x0-c-default.jpg",
+          'https://pcdn.columbian.com/wp-content/uploads/2021/06/0615_fea_meditation-1226x0-c-default.jpg',
         createdAt: new Date(),
         user: BOT,
       };
-    } else if (text == "show options") {
+    } else if (text == 'show options') {
       msg = {
         _id: this.state.messages.length + 1,
-        text: "Please choose type of meditation",
+        text: 'Please choose type of meditation',
         createdAt: new Date(),
         user: BOT,
         quickReplies: {
-          type: "radio",
+          type: 'radio',
           keepIt: true,
           values: [
             {
-              title: "Mindful",
-              value: "Mindful",
-              bColor: "#A0522D",
-              bgColor: "#A0522D",
+              title: 'Mindful',
+              value: 'Mindful',
+              bColor: '#A0522D',
+              bgColor: '#A0522D',
             },
             {
-              title: "Walking",
-              value: "Walking",
-              bColor: "#7B68EE",
-              bgColor: "#7B68EE",
+              title: 'Walking',
+              value: 'Walking',
+              bColor: '#7B68EE',
+              bgColor: '#7B68EE',
             },
             {
-              title: "Transcendental",
-              value: "Transcendental",
-              bColor: "#008B8B",
-              bgColor: "#008B8B",
+              title: 'Transcendental',
+              value: 'Transcendental',
+              bColor: '#008B8B',
+              bgColor: '#008B8B',
             },
           ],
         },
@@ -124,10 +124,10 @@ class Chat extends Component {
     return (
       <Bubble
         {...props}
-        textStyle={{ right: { color: "black" } }}
+        textStyle={{ right: { color: 'black' } }}
         wrapperStyle={{
-          left: { backgroundColor: "lavender" },
-          right: { backgroundColor: "pink" },
+          left: { backgroundColor: 'lavender' },
+          right: { backgroundColor: 'pink' },
         }}
       />
     );
@@ -135,7 +135,7 @@ class Chat extends Component {
 
   render() {
     return (
-      <View style={{ flex: 1, backgroundColor: "#fff" }}>
+      <View style={{ flex: 1, backgroundColor: '#fff' }}>
         <GiftedChat
           messages={this.state.messages}
           onSend={(message) => this.onSend(message)}

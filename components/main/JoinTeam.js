@@ -1,111 +1,88 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, TouchableWithoutFeedback, Modal, ToastAndroid } from "react-native";
-
-import Icon from "react-native-vector-icons/FontAwesome5";
+import React, { useState, useEffect, useRef } from 'react';
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  Animated,
+  useWindowDimensions,
+} from 'react-native';
+import { defaultTeamImageURL } from './Teams';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 import { Searchbar } from 'react-native-paper';
-import firebase from "firebase";
+import firebase from 'firebase';
 
 const useTeams = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [teams, setTeams] = useState([]);
 
-
   useEffect(() => {
     firebase
       .firestore()
-      .collection("teams")
+      .collection('teams')
       .get()
-      .then(querySnapshot => {
-        querySnapshot.docs.forEach(doc => {
-          setTeams((currentTeams) => [...currentTeams, { ...doc.data(), id: doc.id }]);
+      .then((querySnapshot) => {
+        let allTeams = [];
+        querySnapshot.docs.forEach((doc) => {
+          allTeams = [...allTeams, { ...doc.data(), id: doc.id }];
         });
+        setTeams(allTeams);
         setLoading(false);
       })
-      .catch(err => {
-        console.log(error)
+      .catch((err) => {
+        console.log(error);
         setLoading(false);
         setError(err);
       });
-  }, [])
+  }, []);
 
   return [teams, loading, error];
-}
+};
 
-const TeamModal = ({ team, setModalVisible }) => {
-  const handleJoinTeam = (team) => {
-    firebase
-      .firestore()
-      .collection("users")
-      .doc(firebase.auth().currentUser.uid)
-      .update({
-        teams: firebase.firestore.FieldValue.arrayUnion(team.id)
-      })
-      .then(() => {
-        ToastAndroid.show('You have joined the team', ToastAndroid.SHORT);
-        setModalVisible(false);
-      })
-      .catch(err => {
-        console.log(err);
-        ToastAndroid.show('Error joining team', ToastAndroid.SHORT);
-      });
-  };
-
-  return (
-    <TouchableWithoutFeedback onPress={() => {
-      setModalVisible(false)
-    }}>
-      <View style={teamModalStyles.backgroundView}>
-        <TouchableWithoutFeedback>
-          <View style={teamModalStyles.view}>
-            <TouchableOpacity style={teamModalStyles.close} onPress={() => setModalVisible((curVisible) => !curVisible)}>
-              <Icon style={teamModalStyles.close} name="times" size={20} color="#222" />
-            </TouchableOpacity>
-            <Image style={teamModalStyles.image} source={{ uri: team.imageURL }} />
-            <Text style={teamModalStyles.name}>{team.name}</Text>
-
-            <View style={teamModalStyles.row}>
-              <View style={teamModalStyles.row}>
-                <Icon name="user-friends" size={16} color="#222" style={{ marginRight: 4 }} />
-                <Text style={teamStyles.memberCount}>{team.members.length}</Text>
-              </View>
-
-              {/* <View style={teamModalStyles.row}>
-                <Icon name="user" solid size={16} color="#222" style={{ marginRight: 4 }} />
-                <Text style={teamModalStyles.creator}>{team.creator.name}</Text>
-              </View> */}
-            </View>
-
-            <Text style={teamModalStyles.description}>{team.description}</Text>
-            <Text style={teamModalStyles.amount}>Rs.{team.amountRaised || "Nil"} raised</Text>
-            <TouchableOpacity onPress={() => handleJoinTeam(team)}>
-              <View style={teamModalStyles.join}>
-                <Text style={teamModalStyles.joinText}>Join Team</Text>
-              </View>
-            </TouchableOpacity>
-          </View >
-        </TouchableWithoutFeedback>
-      </View >
-    </TouchableWithoutFeedback >
-  );
-}
-
-export default function () {
-  const [teams, loading, error] = useTeams();//useFetch("TEAMS_API_URL");
+const JoinTeam = ({ navigation }) => {
+  const [teams, loading, error] = useTeams();
   const [searchQuery, setSearchQuery] = useState('');
-  const onChangeSearch = query => setSearchQuery(query);
-  const [selectedTeam, setSelectedTeam] = useState({});
-  const [modalVisible, setModalVisible] = useState(false);
-  const filteredTeams = teams.filter(team => team.name.toLowerCase().includes(searchQuery.toLowerCase()));
+  const onChangeSearch = (query) => setSearchQuery(query);
+  const filteredTeams = teams.filter((team) =>
+    team.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
+  const circleAnimatedValue = useRef(new Animated.Value(0)).current;
 
-  if (loading) {
-    return (
-      <View style={{ margin: 16 }}>
-        <Text>Loading...</Text>
-      </View >
-    );
-  }
+  const skeletonAnimate = () => {
+    circleAnimatedValue.setValue(0);
+    Animated.timing(circleAnimatedValue, {
+      toValue: 1,
+      duration: 400,
+      useNativeDriver: true,
+    }).start(() => {
+      setTimeout(() => {
+        skeletonAnimate();
+      }, 100);
+    });
+  };
+  useEffect(() => {
+    skeletonAnimate();
+  }, []);
+
+  const windowWidth = useWindowDimensions().width;
+  const translateX = circleAnimatedValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [-10, 50],
+  });
+
+  const translateX2 = circleAnimatedValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [-10, windowWidth],
+  });
+
+  const translateX3 = circleAnimatedValue.interpolate({
+    inputRange: [0, 1],
+    outputRange: [-10, 32],
+  });
 
   return (
     <View>
@@ -115,63 +92,161 @@ export default function () {
         placeholder="Find a Team"
         onChangeText={onChangeSearch}
         value={searchQuery}
-
       />
-      {/* All Teams list */}
-      {filteredTeams.length == 0 && <View style={{ padding: 16 }}><Text>No teams found</Text></View>}
-      {filteredTeams.length > 0 && <FlatList
-        data={filteredTeams}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => {
-          return (
-            <TouchableOpacity onPress={() => {
-              setSelectedTeam(item);
-              setModalVisible(true);
-            }}>
-              <View style={teamStyles.team}>
-                <Image source={{ uri: item.imageURL }} style={teamStyles.image} />
-                <Text style={teamStyles.name}>{item.name}</Text>
-                <Text style={teamStyles.memberCount}>{item.members.length}</Text>
-                <Icon name="user-friends" size={16} color="#222" />
-              </View>
-            </TouchableOpacity>
-          );
-        }}
-      />}
 
-      {/* Specific Team Popup Modal */}
-      <Modal
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => { setModalVisible(false) }}
-      >
-        <TeamModal team={selectedTeam} setModalVisible={setModalVisible}></TeamModal>
-      </Modal>
-    </View >
+      {loading && (
+        <FlatList
+          data={[{ key: 1 }, { key: 2 }, { key: 3 }]}
+          renderItem={() => {
+            return (
+              <View style={[teamStyles.team, { backgroundColor: '#fff' }]}>
+                <View
+                  style={[
+                    teamStyles.image,
+                    {
+                      backgroundColor: '#ECEFF1',
+                    },
+                  ]}
+                >
+                  <Animated.View
+                    style={{
+                      width: '30%',
+                      opacity: 0.5,
+                      height: '100%',
+                      backgroundColor: 'white',
+                      transform: [{ translateX: translateX }],
+                    }}
+                  ></Animated.View>
+                </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    flex: 1,
+                  }}
+                >
+                  <Animated.View
+                    style={{
+                      backgroundColor: '#ECEFF1',
+                      flex: 1,
+                      marginRight: 32,
+                      height: 32,
+                    }}
+                  >
+                    <Animated.View
+                      style={{
+                        width: '20%',
+                        height: '100%',
+                        backgroundColor: 'white',
+                        opacity: 0.5,
+                        transform: [{ translateX: translateX2 }],
+                      }}
+                    ></Animated.View>
+                  </Animated.View>
+                  <Animated.View
+                    style={{
+                      backgroundColor: '#ECEFF1',
+                      width: 32,
+                      height: 32,
+                    }}
+                  >
+                    <Animated.View
+                      style={{
+                        width: '20%',
+                        height: '100%',
+                        backgroundColor: 'white',
+                        opacity: 0.5,
+                        transform: [{ translateX: translateX3 }],
+                      }}
+                    ></Animated.View>
+                  </Animated.View>
+                </View>
+              </View>
+            );
+          }}
+        />
+      )}
+      {/* All Teams list */}
+      {!loading && filteredTeams.length == 0 && (
+        <View style={{ padding: 16 }}>
+          <Text>No teams found</Text>
+        </View>
+      )}
+      {filteredTeams.length > 0 && (
+        <FlatList
+          data={filteredTeams}
+          contentContainerStyle={{ paddingBottom: 100 }}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => {
+            return (
+              <TouchableOpacity
+                delayPressIn={50}
+                onPress={() => {
+                  navigation.navigate('ViewTeam', {
+                    team: item,
+                    showJoinButton: !item.members.includes(
+                      firebase.auth().currentUser.uid
+                    ),
+                  });
+                }}
+              >
+                <View style={teamStyles.team}>
+                  <Image
+                    source={{ uri: item.imageURL || defaultTeamImageURL }}
+                    style={teamStyles.image}
+                  />
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      flex: 1,
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                    }}
+                  >
+                    <Text style={teamStyles.name}>{item.name}</Text>
+                    <View
+                      style={{
+                        width: '20%',
+                        flexDirection: 'row',
+                        justifyContent: 'flex-end',
+                        alignItems: 'center',
+                      }}
+                    >
+                      <Text style={teamStyles.memberCount}>
+                        {item.members.length}
+                      </Text>
+                      <Icon name="user-friends" size={16} color="#222" />
+                    </View>
+                  </View>
+                </View>
+              </TouchableOpacity>
+            );
+          }}
+        />
+      )}
+    </View>
   );
 };
-
+export default JoinTeam;
 
 const teamStyles = StyleSheet.create({
   searchBar: {
     padding: 16,
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     borderWidth: 1,
-    borderTopColor: "#bbb",
-    borderBottomColor: "#bbb",
+    borderTopColor: '#bbb',
+    borderBottomColor: '#bbb',
   },
   searchText: {
     marginLeft: 8,
   },
   team: {
     padding: 16,
-    display: "flex",
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
     borderBottomWidth: 1,
-    borderBottomColor: "#bbb",
+    borderBottomColor: '#bbb',
   },
   image: {
     width: 48,
@@ -180,74 +255,12 @@ const teamStyles = StyleSheet.create({
     marginRight: 8,
   },
   name: {
-    display: "flex",
-    flexDirection: "row",
-    flexGrow: 1
+    flexDirection: 'column',
+    // width: '90%',
+    flex: 1,
   },
   memberCount: {
-    marginLeft: 8,
+    marginRight: 4,
     fontSize: 16,
-  }
+  },
 });
-
-const teamModalStyles = StyleSheet.create({
-  backgroundView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.5)"
-  },
-  view: {
-    padding: 16,
-    display: "flex",
-    flexDirection: "column",
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: "white",
-    borderRadius: 16,
-    minWidth: "80%",
-    maxWidth: "80%",
-    minHeight: "50%",
-  },
-  close: {
-    alignSelf: "flex-end"
-  },
-  row: {
-    display: "flex",
-    alignItems: "center",
-    flexDirection: "row",
-  },
-  image: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-  },
-  name: {
-    fontSize: 24,
-  },
-  description: {
-    alignSelf: "flex-start",
-    marginBottom: 16,
-    marginTop: 16,
-    fontSize: 14
-  },
-  creator: {
-    fontSize: 12,
-  },
-  amount: {
-    fontSize: 24,
-    marginBottom: 16,
-  },
-  join: {
-    minWidth: "80%",
-    backgroundColor: "rgb(50, 166, 191)",
-    padding: 8,
-    borderRadius: 4,
-    alignItems: "center"
-  },
-  joinText: {
-    fontWeight: "bold",
-    fontSize: 16,
-    color: "#fff"
-  }
-})

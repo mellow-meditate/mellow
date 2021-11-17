@@ -1,15 +1,15 @@
-import React, { Component } from "react";
-import { View, Text, StyleSheet } from "react-native";
-import { connect } from "react-redux";
-import { bindActionCreators } from "redux";
-import { fetchUser } from "../redux/actions/index";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import HomeScreen from "./main/Home";
-import ProfileScreen from "./main/Profile";
-import TeamsScreen from "./main/Teams";
-import { LinearGradient } from "expo-linear-gradient";
+import React, { Component } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { fetchUser } from '../redux/actions/index';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import HomeScreen from './main/Home';
+import ProfileScreen from './main/Profile';
+import TeamsScreen from './main/Teams';
+import { LinearGradient } from 'expo-linear-gradient';
 
-import { MaterialCommunityIcons } from "react-native-vector-icons";
+import { MaterialCommunityIcons } from 'react-native-vector-icons';
 
 const Tab = createBottomTabNavigator();
 
@@ -25,13 +25,13 @@ export class Main extends Component {
     return (
       <Tab.Navigator
         screenOptions={{
-          tabBarActiveTintColor: "white",
-          tabBarInactiveTintColor: "grey",
-          tabBarActiveBackgroundColor: "#000428",
-          tabBarInactiveBackgroundColor: "#000428",
+          tabBarActiveTintColor: 'white',
+          tabBarInactiveTintColor: 'grey',
+          tabBarActiveBackgroundColor: '#000428',
+          tabBarInactiveBackgroundColor: '#000428',
         }}
         navigationOptions={{
-          backgroundColor: "#000428",
+          backgroundColor: '#000428',
         }}
       >
         <Tab.Screen
@@ -62,7 +62,7 @@ export class Main extends Component {
           listeners={({ navigation }) => ({
             tabPress: (event) => {
               event.preventDefault();
-              navigation.navigate("Chat");
+              navigation.navigate('Chat');
             },
           })}
           options={{
