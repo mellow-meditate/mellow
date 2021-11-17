@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useCallback } from "react";
-import { useDispatch } from "react-redux";
-import { StyleSheet, Text, View, Image } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { Audio } from "expo-av";
-import { popular, anxiety, sleep } from "../../data/meditations";
-import { LinearGradient } from "expo-linear-gradient";
+import React, { useEffect, useState, useCallback } from 'react';
+import { useDispatch } from 'react-redux';
+import { StyleSheet, Text, View, Image } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { Audio } from 'expo-av';
+import { popular, anxiety, sleep } from '../../data/meditations';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function Play({ route, navigation }) {
   const { id } = route.params;
@@ -20,8 +20,8 @@ export default function Play({ route, navigation }) {
     var arr = new Array();
     popular.forEach((item) => {
       if (item.id == id) {
-        console.log("item.id " + item.id);
-        console.log("id " + id);
+        console.log('item.id ' + item.id);
+        console.log('id ' + id);
 
         arr.push(item.uri);
         arr.push(item.title);
@@ -34,8 +34,8 @@ export default function Play({ route, navigation }) {
     if (flag == 0) {
       anxiety.forEach((item) => {
         if (item.id == id) {
-          console.log("item.id " + item.id);
-          console.log("id " + id);
+          console.log('item.id ' + item.id);
+          console.log('id ' + id);
 
           arr.push(item.uri);
           arr.push(item.title);
@@ -49,8 +49,8 @@ export default function Play({ route, navigation }) {
     if (flag == 0) {
       sleep.forEach((item) => {
         if (item.id == id) {
-          console.log("item.id " + item.id);
-          console.log("id " + id);
+          console.log('item.id ' + item.id);
+          console.log('id ' + id);
 
           arr.push(item.uri);
           arr.push(item.title);
@@ -88,7 +88,7 @@ export default function Play({ route, navigation }) {
 
         if (playbackStatus.didJustFinish) {
           setIsPlaying(false);
-          console.log("meditation finished!!!!!!!");
+          console.log('meditation finished!!!!!!!');
         }
       }
     },
@@ -123,7 +123,7 @@ export default function Play({ route, navigation }) {
   return (
     <View style={styles.container}>
       <LinearGradient
-        colors={["#000428", "#004e92"]}
+        colors={['#000428', '#004e92']}
         style={styles.background}
         start={[1, 1]}
       >
@@ -132,12 +132,12 @@ export default function Play({ route, navigation }) {
         <Text style={styles.subtitle}>{subtitle}</Text>
         <Ionicons
           style={{
-            alignSelf: "center",
-            backgroundColor: "gray",
+            alignSelf: 'center',
+            backgroundColor: 'gray',
             padding: 10,
             borderRadius: 50,
           }}
-          name={isPlaying ? "pause" : "play"}
+          name={isPlaying ? 'pause' : 'play'}
           size={24}
           color="white"
           onPress={handleAudioPlayPause}
@@ -149,40 +149,40 @@ export default function Play({ route, navigation }) {
 
 const styles = StyleSheet.create({
   background: {
-    height: "100%",
-    width: "100%",
+    height: '100%',
+    width: '100%',
   },
   container: {
     flex: 1,
-    justifyContent: "center",
+    justifyContent: 'center',
     // paddingLeft: 31,
     // paddingRight: 31,
   },
   title: {
     fontSize: 18,
-    textAlign: "center",
-    fontWeight: "bold",
+    textAlign: 'center',
+    fontWeight: 'bold',
     marginBottom: 8,
-    color: "white",
+    color: 'white',
   },
   subtitle: {
-    textAlign: "center",
+    textAlign: 'center',
     fontSize: 16,
     marginBottom: 30,
-    color: "white",
+    color: 'white',
   },
   image: {
-    width: "100%",
-    height: "100%",
+    width: '100%',
+    height: '100%',
     marginTop: 100,
     maxWidth: 300,
     maxHeight: 300,
     marginBottom: 30,
     borderRadius: 10,
-    alignSelf: "center",
+    alignSelf: 'center',
   },
   favourite: {
-    position: "absolute",
+    position: 'absolute',
     top: 10,
     right: 10,
   },

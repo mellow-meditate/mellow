@@ -1,9 +1,9 @@
-import React from "react";
-import { ScrollView, Text } from "react-native";
-import { StyleSheet, FlatList } from "react-native";
-import { Card, Paragraph } from "react-native-paper";
-import { meditations, MeditationItem } from "../../data/meditations";
-import { LinearGradient } from "expo-linear-gradient";
+import React from 'react';
+import { ScrollView, Text } from 'react-native';
+import { StyleSheet, FlatList } from 'react-native';
+import { Card, Paragraph } from 'react-native-paper';
+import { meditations, MeditationItem } from '../../data/meditations';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function Home({ navigation }) {
   const renderPopularCard = ({ item }) => {
@@ -12,7 +12,7 @@ export default function Home({ navigation }) {
         elevation={1}
         style={styles.card}
         onPress={() =>
-          navigation.navigate("Play", {
+          navigation.navigate('Play', {
             id: item.id,
           })
         }
@@ -42,7 +42,7 @@ export default function Home({ navigation }) {
       <Card
         style={styles.card}
         onPress={() =>
-          navigation.navigate("Play", {
+          navigation.navigate('Play', {
             id: item.id,
           })
         }
@@ -65,7 +65,7 @@ export default function Home({ navigation }) {
   return (
     <ScrollView style={styles.view}>
       <LinearGradient
-        colors={["#000428", "#004e92"]}
+        colors={['#000428', '#004e92']}
         style={styles.background}
         start={[1, 1]}
       >
@@ -103,7 +103,7 @@ export default function Home({ navigation }) {
 
 const styles = StyleSheet.create({
   background: {
-    height: "100%",
+    height: '100%',
     paddingLeft: 17,
   },
   view: {
@@ -112,13 +112,13 @@ const styles = StyleSheet.create({
     // background: linear-gradient(to right, #004e92, #000428);
   },
   card: {
-    backgroundColor: "transparent",
+    backgroundColor: 'transparent',
     width: 250,
     marginRight: 30,
     height: 220,
     borderWidth: 0, // Remove Border
 
-    shadowColor: "rgba(0,0,0, 0.0)", // Remove Shadow for iOS
+    shadowColor: 'rgba(0,0,0, 0.0)', // Remove Shadow for iOS
     shadowOffset: { height: 0, width: 0 },
     shadowOpacity: 0,
     shadowRadius: 0,
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
   cardTitle: {
     marginLeft: -10,
     marginTop: -15,
-    color: "white",
+    color: 'white',
     fontSize: 15,
   },
   cardImage: {
@@ -148,25 +148,25 @@ const styles = StyleSheet.create({
   },
   cardContent: {
     flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
   },
   cardSubtitle: {
-    color: "white",
+    color: 'white',
     fontSize: 12,
     marginTop: -5,
     marginLeft: -10,
   },
   cardParagraph: {
-    color: "white",
-    fontWeight: "100",
+    color: 'white',
+    fontWeight: '100',
     fontSize: 12,
     marginTop: -20,
     marginLeft: -10,
   },
   downloadButton: {
-    position: "relative",
+    position: 'relative',
     top: -6,
   },
   cards: {
@@ -175,8 +175,8 @@ const styles = StyleSheet.create({
   title: {
     marginTop: 15,
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     marginBottom: 19,
-    color: "white",
+    color: 'white',
   },
 });

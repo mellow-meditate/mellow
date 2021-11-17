@@ -1,6 +1,6 @@
-import * as React from "react";
-import { StyleSheet, View, Text } from "react-native";
-import { MaterialIcons as Icon } from "@expo/vector-icons";
+import * as React from 'react';
+import { StyleSheet, View, Text } from 'react-native';
+import { MaterialIcons as Icon } from '@expo/vector-icons';
 
 export default function PlayerControls({
   positionTime,
@@ -28,8 +28,8 @@ export default function PlayerControls({
 
 const styles = StyleSheet.create({
   controls: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-evenly",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
   },
 });

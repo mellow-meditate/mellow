@@ -1,19 +1,19 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
 import {
   View,
   Button,
   TextInput,
   StyleSheet,
   TouchableHighlight,
-} from "react-native";
-import firebase from "firebase";
+} from 'react-native';
+import firebase from 'firebase';
 
 export class Login extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      email: "",
-      password: "",
+      email: '',
+      password: '',
     };
     this.onSignUp = this.onSignUp.bind(this);
   }
@@ -56,23 +56,23 @@ export class Login extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   inputContainer: {
-    width: "90%",
+    width: '90%',
   },
   input: {
-    backgroundColor: "white",
+    backgroundColor: 'white',
     padding: 10,
     borderRadius: 10,
     marginTop: 30,
     marginLeft: 35,
   },
   buttonContainer: {
-    width: "50%",
-    justifyContent: "center",
-    alignItems: "center",
+    width: '50%',
+    justifyContent: 'center',
+    alignItems: 'center',
     marginTop: 40,
     marginLeft: 100,
     borderRadius: 20,

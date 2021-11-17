@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, Button, StyleSheet, TouchableOpacity } from "react-native";
-import { LinearGradient } from "expo-linear-gradient";
-import * as ImagePicker from "expo-image-picker";
+import React, { useEffect, useState } from 'react';
+import { View, Text, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { LinearGradient } from 'expo-linear-gradient';
+import * as ImagePicker from 'expo-image-picker';
 
-import firebase from "firebase";
-require("firebase/firestore");
-import { connect } from "react-redux";
+import firebase from 'firebase';
+require('firebase/firestore');
+import { connect } from 'react-redux';
 
 const onLogout = () => {
   firebase.auth().signOut();
@@ -18,7 +18,7 @@ function Profile(props) {
 
   return (
     <LinearGradient
-      colors={["#000428", "#004e92"]}
+      colors={['#000428', '#004e92']}
       style={styles.background}
       start={[1, 1]}
     >
@@ -62,29 +62,29 @@ const mapStateToProps = (store) => ({
 
 const styles = StyleSheet.create({
   background: {
-    height: "100%",
+    height: '100%',
   },
   textbackground: {
     marginLeft: 40,
     marginTop: 30,
-    backgroundColor: "black",
+    backgroundColor: 'black',
     height: 50,
     width: 300,
-    justifyContent: "center",
+    justifyContent: 'center',
     borderRadius: 16,
   },
   name: {
-    color: "white",
+    color: 'white',
     marginLeft: 20,
     fontSize: 18,
   },
   email: {
-    color: "white",
+    color: 'white',
     marginLeft: 20,
     fontSize: 18,
   },
   logout: {
-    backgroundColor: "rgb(7, 77, 233)",
+    backgroundColor: 'rgb(7, 77, 233)',
     padding: 6,
     paddingHorizontal: 12,
     borderRadius: 8,
@@ -93,20 +93,20 @@ const styles = StyleSheet.create({
     marginLeft: 105,
   },
   logoutButton: {
-    alignItems: "center",
+    alignItems: 'center',
     marginTop: 100,
     marginBottom: 40,
-    backgroundColor: "rgb(7, 77, 233)",
+    backgroundColor: 'rgb(7, 77, 233)',
     padding: 6,
     paddingHorizontal: 12,
     borderRadius: 8,
     marginLeft: 130,
     width: 120,
     height: 40,
-    justifyContent: "center",
+    justifyContent: 'center',
   },
   buttonText: {
-    color: "white",
+    color: 'white',
   },
 });
 
