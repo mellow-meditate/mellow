@@ -18,7 +18,7 @@ export class Register extends Component {
       donations: 0,
       meditations: 0,
       chatbotConvs: 0,
-      image: '',
+      imageURL: '',
     };
     this.onSignUp = this.onSignUp.bind(this);
   }
@@ -31,7 +31,7 @@ export class Register extends Component {
       donations,
       meditations,
       chatbotConvs,
-      image,
+      imageURL,
     } = this.state;
     firebase
       .auth()
@@ -47,7 +47,7 @@ export class Register extends Component {
             donations,
             meditations,
             chatbotConvs,
-            image,
+            imageURL,
           });
         console.log(result);
       })

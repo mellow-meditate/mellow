@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { fetchUser } from '../redux/actions/index';
@@ -7,9 +7,9 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from './main/Home';
 import ProfileScreen from './main/Profile';
 import TeamsScreen from './main/Teams';
-import { LinearGradient } from 'expo-linear-gradient';
-
+import FeatherIcon from 'react-native-vector-icons/Feather';
 import { MaterialCommunityIcons } from 'react-native-vector-icons';
+import firebase from 'firebase';
 
 const Tab = createBottomTabNavigator();
 
@@ -81,6 +81,14 @@ export class Main extends Component {
                 color={color}
                 size={26}
               />
+            ),
+            headerRight: () => (
+              <TouchableOpacity
+                style={{ marginRight: 16 }}
+                onPress={() => firebase.auth().signOut()}
+              >
+                <FeatherIcon name="log-out" size={24} color="#222" />
+              </TouchableOpacity>
             ),
           }}
         />
