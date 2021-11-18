@@ -1,3 +1,16 @@
+/*
+interface Team {
+    id: String,
+    name: String
+    imageURL: String
+    description: String
+    members: []
+    amountRaised: Number
+    created: Timestamp,
+    createdBy: String (User.id)
+}
+*/
+
 import React, { useState, useEffect, useRef } from 'react';
 import {
   View,

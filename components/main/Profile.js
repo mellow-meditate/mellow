@@ -1,20 +1,119 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import React, { useState } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableHighlight,
+  Image,
+  ActivityIndicator,
+} from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+
 import * as ImagePicker from 'expo-image-picker';
+import donationIcon from '../../assets/donation.png';
+import meditationIcon from '../../assets/meditation.png';
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
+import FontAwesomeIcon from 'react-native-vector-icons/FontAwesome5';
 
 import firebase from 'firebase';
-require('firebase/firestore');
 import { connect } from 'react-redux';
 
-const onLogout = () => {
-  firebase.auth().signOut();
+const defaultUserImageURL =
+  'https://firebasestorage.googleapis.com/v0/b/mellow-meditate.appspot.com/o/users%2Fdefault%20user%20imageurl.jpg?alt=media&token=daf8d45c-58cb-4402-88e7-cd5e9fda590e';
+
+const uploadImageAsync = async (uri) => {
+  const blob = await new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest();
+    xhr.onload = function () {
+      resolve(xhr.response);
+    };
+    xhr.onerror = function (e) {
+      console.log(e);
+      blob.close();
+      reject(new TypeError('Network request failed'));
+    };
+    xhr.responseType = 'blob';
+    xhr.open('GET', uri, true);
+    xhr.send(null);
+  });
+
+  const fileRef = firebase
+    .storage()
+    .ref('users/')
+    .child(firebase.auth().currentUser.uid);
+  const snapshot = await fileRef.put(blob);
+  blob.close();
+  return await snapshot.ref.getDownloadURL();
 };
 
 function Profile(props) {
-  const [image, setImage] = useState();
-  const [upload, setUpload] = useState();
+  const [imageURL, setImageURL] = useState('');
+  const [uploading, setUploading] = useState(false);
+  const [didUpload, setDidUpload] = useState(false);
+
   const { currentUser } = props;
+  const handlePickImage = async () => {
+    try {
+      if (Platform.OS !== 'web') {
+        const { status } =
+          await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (status !== 'granted') {
+          alert('Sorry, we need Photo gallery permissions to make this work!');
+          return;
+        }
+        let pickerResult = await ImagePicker.launchImageLibraryAsync({
+          allowsEditing: true,
+          aspect: [1, 1],
+          quality: 0.5,
+        });
+        setUploading(true);
+        if (!pickerResult.cancelled) {
+          const uploadUrl = await uploadImageAsync(pickerResult.uri);
+          setDidUpload(true);
+          firebase
+            .firestore()
+            .collection('users')
+            .doc(firebase.auth().currentUser.uid)
+            .update({
+              imageURL: uploadUrl,
+            })
+            .then(() => {
+              alert('Profile picture updated successfully.');
+            })
+            .catch((err) => {
+              console.log(err);
+              alert('Error updating profile picture.');
+            });
+          setImageURL(uploadUrl);
+        }
+      }
+    } catch (err) {
+      setUploading(false);
+      alert('Image upload failed.');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const maybeShowLoadingIndicator = () => {
+    if (uploading) {
+      return (
+        <View
+          style={[
+            StyleSheet.absoluteFill,
+            {
+              backgroundColor: 'rgba(0,0,0,0.5)',
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: 24,
+            },
+          ]}
+        >
+          <ActivityIndicator color="#fff" animating size="large" />
+        </View>
+      );
+    }
+  };
 
   return (
     <LinearGradient
@@ -22,36 +121,74 @@ function Profile(props) {
       style={styles.background}
       start={[1, 1]}
     >
-      <View>
-        <View style={styles.textbackground}>
-          <Text style={styles.name}>Name : {currentUser.name}</Text>
-        </View>
-        <View style={styles.textbackground}>
-          <Text style={styles.email}>Email : {currentUser.email}</Text>
-        </View>
-        <View style={styles.textbackground}>
-          <Text style={styles.email}>Donations : {currentUser.donations}</Text>
-        </View>
-        <View style={styles.textbackground}>
-          <Text style={styles.email}>
-            Meditations : {currentUser.meditations}
-          </Text>
-        </View>
-        <View style={styles.textbackground}>
-          <Text style={styles.email}>
-            Relief Bot Conversations : {currentUser.chatbotConvs}
-          </Text>
-        </View>
-        <View style={styles.logoutButton}>
-          <TouchableOpacity
-            onPress={() => {
-              onLogout();
-            }}
-          >
-            <Text style={styles.buttonText}>Logout</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+      {currentUser ? (
+        <>
+          <View style={{ alignItems: 'center', paddingVertical: 24 }}>
+            <View>
+              <Image
+                style={styles.profileImage}
+                resizeMode="cover"
+                key={`${currentUser.imageURL}${imageURL}${new Date()}`}
+                source={{
+                  uri: didUpload
+                    ? imageURL
+                    : currentUser.imageURL || defaultUserImageURL,
+                  cache: 'reload',
+                  headers: {
+                    Pragma: 'no-cache',
+                  },
+                }}
+              />
+              <TouchableHighlight
+                style={styles.editProfileImage}
+                onPress={handlePickImage}
+                disabled={uploading}
+              >
+                <>
+                  <FontAwesomeIcon name="pen" size={16} color="white" />
+                  {maybeShowLoadingIndicator()}
+                </>
+              </TouchableHighlight>
+            </View>
+            <Text style={styles.name}>{currentUser.name}</Text>
+            <Text style={styles.email}>{currentUser.email}</Text>
+          </View>
+          <View style={styles.whiteContainer}>
+            <Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 8 }}>
+              Statistics
+            </Text>
+            <View style={styles.row}>
+              <View style={styles.card}>
+                <Image
+                  style={styles.cardImage}
+                  resizeMode="contain"
+                  source={meditationIcon}
+                />
+                <Text style={styles.cardTitle}>Meditation Sessions</Text>
+                <Text style={styles.cardValue}>{currentUser.meditations}</Text>
+              </View>
+              <View style={styles.card}>
+                <Image
+                  style={styles.cardImage}
+                  resizeMode="contain"
+                  source={donationIcon}
+                />
+                <Text style={styles.cardTitle}>Donations</Text>
+                <Text style={styles.cardValue}>{currentUser.donations}</Text>
+              </View>
+            </View>
+            <View style={styles.row}>
+              <View style={styles.card}>
+                <SimpleLineIcons name="clock" size={32} color="#999" />
+                <Text style={styles.cardTitle}>Reliefbot Conversations</Text>
+                <Text style={styles.cardValue}>{currentUser.chatbotConvs}</Text>
+              </View>
+            </View>
+          </View>
+        </>
+      ) : (
+        <Text>Loading...</Text>
+      )}
     </LinearGradient>
   );
 }
@@ -62,51 +199,65 @@ const mapStateToProps = (store) => ({
 
 const styles = StyleSheet.create({
   background: {
-    height: '100%',
+    flex: 1,
   },
-  textbackground: {
-    marginLeft: 40,
-    marginTop: 30,
-    backgroundColor: 'black',
-    height: 50,
-    width: 300,
-    justifyContent: 'center',
+  profileImage: {
+    width: 150,
+    height: 150,
+    borderRadius: 75,
+    borderWidth: 3,
+    borderColor: '#fff',
+  },
+  editProfileImage: {
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    padding: 8,
     borderRadius: 16,
+    position: 'absolute',
+    top: 12,
+    left: 0,
   },
   name: {
-    color: 'white',
-    marginLeft: 20,
-    fontSize: 18,
+    marginTop: 16,
+    fontSize: 24,
+    color: '#fff',
   },
   email: {
-    color: 'white',
-    marginLeft: 20,
-    fontSize: 18,
+    marginTop: 8,
+    fontSize: 14,
+    color: '#fff',
   },
-  logout: {
-    backgroundColor: 'rgb(7, 77, 233)',
-    padding: 6,
-    paddingHorizontal: 12,
-    borderRadius: 8,
-    marginTop: 70,
-    width: 170,
-    marginLeft: 105,
+  whiteContainer: {
+    flex: 1,
+    backgroundColor: 'white',
+    paddingVertical: 16,
+    paddingHorizontal: 16,
   },
-  logoutButton: {
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-evenly',
+    marginVertical: 8,
+  },
+  card: {
+    width: '45%',
+    borderWidth: 2,
+    borderColor: '#ccc',
+    borderRadius: 16,
     alignItems: 'center',
-    marginTop: 100,
-    marginBottom: 40,
-    backgroundColor: 'rgb(7, 77, 233)',
-    padding: 6,
-    paddingHorizontal: 12,
-    borderRadius: 8,
-    marginLeft: 130,
-    width: 120,
-    height: 40,
     justifyContent: 'center',
+    paddingVertical: 8,
   },
-  buttonText: {
-    color: 'white',
+  cardImage: {
+    width: 48,
+    height: 32,
+  },
+  cardTitle: {
+    fontSize: 14,
+    textAlign: 'center',
+    color: '#333',
+  },
+  cardValue: {
+    color: '#074EE8',
+    fontSize: 24,
   },
 });
 
