@@ -1,122 +1,78 @@
-import React, { useEffect, useState, useCallback } from 'react';
-import { useDispatch } from 'react-redux';
-import { StyleSheet, Text, View, Image } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import React, { useState, useEffect, useRef } from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  Modal,
+  TouchableOpacity,
+} from 'react-native';
+import firebase from 'firebase';
 import { Audio } from 'expo-av';
-import { popular, anxiety, sleep } from '../../data/meditations';
+import { meditations } from '../../data/meditations';
 import { LinearGradient } from 'expo-linear-gradient';
+import PlayerControls from './PlayControls';
+import { minutesToPoints } from '../../misc/Points';
 
 export default function Play({ route, navigation }) {
   const { id } = route.params;
-
-  const dispatch = useDispatch();
+  const mountedRef = useRef(null);
 
   const [isPlaying, setIsPlaying] = useState(false);
+  const [positionTime, setPositionTime] = useState(0);
+  const [durationTime, setDurationTime] = useState(0);
   const [playbackObject, setPlaybackObject] = useState(null);
   const [playbackStatus, setPlaybackStatus] = useState(null);
 
-  function useMeditate(id) {
-    var flag = 0;
-    var arr = new Array();
-    popular.forEach((item) => {
-      if (item.id == id) {
-        console.log('item.id ' + item.id);
-        console.log('id ' + id);
-
-        arr.push(item.uri);
-        arr.push(item.title);
-        arr.push(item.subtitle);
-        arr.push(item.image);
-        flag = 1;
-      }
-    });
-
-    if (flag == 0) {
-      anxiety.forEach((item) => {
-        if (item.id == id) {
-          console.log('item.id ' + item.id);
-          console.log('id ' + id);
-
-          arr.push(item.uri);
-          arr.push(item.title);
-          arr.push(item.subtitle);
-          arr.push(item.image);
-          flag = 1;
-        }
-      });
-    }
-
-    if (flag == 0) {
-      sleep.forEach((item) => {
-        if (item.id == id) {
-          console.log('item.id ' + item.id);
-          console.log('id ' + id);
-
-          arr.push(item.uri);
-          arr.push(item.title);
-          arr.push(item.subtitle);
-          arr.push(item.image);
-          flag = 1;
-        }
-      });
-    }
-
-    return arr;
-  }
-
-  var arr2 = useMeditate(id);
-
-  var title = arr2[1];
-  var image = arr2[3];
-  var subtitle = arr2[2];
-  var uri = arr2[0];
-
   useEffect(() => {
-    if (playbackObject === null) {
-      setPlaybackObject(new Audio.Sound());
-    } else {
-      playbackObject.setOnPlaybackStatusUpdate(onPlaybackStatusUpdate);
-    }
-  }, [onPlaybackStatusUpdate]);
-
-  const onPlaybackStatusUpdate = useCallback(
-    (playbackStatus) => {
-      if (!playbackStatus.isLoaded) {
-        // Update your UI for the unloaded state
-      } else {
-        // Update your UI for the loaded state
-
-        if (playbackStatus.didJustFinish) {
-          setIsPlaying(false);
-          console.log('meditation finished!!!!!!!');
+    mountedRef.current = true;
+    return () => {
+      (async () => {
+        if (playbackObject) {
+          await playbackObject.stopAsync();
         }
-      }
-    },
-    [dispatch, navigation]
-  );
+      })();
+      mountedRef.current = false;
+    };
+  }, [playbackObject]);
 
-  const handleAudioPlayPause = async () => {
-    if (playbackObject !== null && playbackStatus === null) {
-      const status = await playbackObject.loadAsync(
+  // Meditation complete modal
+  const [modalVisible, setModalVisible] = useState(false);
+  const [updatingPoints, setUpdatingPoints] = useState(false);
+
+  let { title, image, subtitle, uri, time } = [...Object.values(meditations)]
+    .flat()
+    .find((meditation) => meditation.id === id);
+  const handlePlay = async () => {
+    // First time we play, we need to load the audio file
+    if (playbackObject == null) {
+      let soundObject = new Audio.Sound();
+      const status = await soundObject.loadAsync(
         { uri: uri },
         { shouldPlay: true }
       );
+      soundObject.setOnPlaybackStatusUpdate((currentStatus) => {
+        if (!mountedRef.current) return;
+        setPositionTime(currentStatus.positionMillis);
+        setDurationTime(currentStatus.durationMillis);
+        if (currentStatus.didJustFinish) {
+          setModalVisible(true);
+          setIsPlaying(false);
+          setPlaybackStatus(null);
+          setPlaybackObject(null);
+        }
+      });
+      setPlaybackObject(soundObject);
       setIsPlaying(true);
-      return setPlaybackStatus(status);
+      setPlaybackStatus(status);
+      return;
     }
-
-    // It will pause our audio
-    if (playbackStatus.isPlaying) {
-      const status = await playbackObject.pauseAsync();
-      setIsPlaying(false);
-      return setPlaybackStatus(status);
-    }
-
-    // It will resume our audio
-    if (!playbackStatus.isPlaying) {
+    // If already paused once, we don't need to load the audio file again
+    if (playbackObject) {
       const status = await playbackObject.playAsync();
+      setPlaybackStatus(status);
       setIsPlaying(true);
-      return setPlaybackStatus(status);
+      return;
     }
   };
 
@@ -130,18 +86,88 @@ export default function Play({ route, navigation }) {
         <Image source={{ uri: image }} style={styles.image} />
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.subtitle}>{subtitle}</Text>
-        <Ionicons
-          style={{
-            alignSelf: 'center',
-            backgroundColor: 'gray',
-            padding: 10,
-            borderRadius: 50,
+        <PlayerControls
+          isPlaying={isPlaying}
+          positionTime={positionTime}
+          durationTime={durationTime}
+          playbackStatus={playbackStatus}
+          pause={async () => {
+            const status = await playbackObject.pauseAsync();
+            setIsPlaying(false);
+            setPlaybackStatus(status);
           }}
-          name={isPlaying ? 'pause' : 'play'}
-          size={24}
-          color="white"
-          onPress={handleAudioPlayPause}
+          play={handlePlay}
+          seekForward={async () => {
+            const status = await playbackObject.setPositionAsync(
+              positionTime + 10000
+            );
+            setIsPlaying(true);
+            setPlaybackStatus(status);
+          }}
         />
+        {modalVisible && (
+          <View
+            style={{
+              backgroundColor: 'rgba(0,0,0,0.5)',
+              position: 'absolute',
+              flex: 1,
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100%',
+            }}
+          />
+        )}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onShow={async () => {
+            // Add the points to the firebase of user
+            setUpdatingPoints(true);
+            let pointsToAdd = minutesToPoints(time);
+
+            firebase
+              .firestore()
+              .collection('users')
+              .doc(firebase.auth().currentUser.uid)
+              .update({
+                points: firebase.firestore.FieldValue.increment(pointsToAdd),
+                meditations: firebase.firestore.FieldValue.increment(1),
+              })
+              .then(() => {
+                setUpdatingPoints(false);
+              });
+          }}
+          onRequestClose={() => {
+            setModalVisible(false);
+            navigation.navigate('Home');
+          }}
+        >
+          <View style={modalStyles.centeredView}>
+            <View style={modalStyles.modalView}>
+              <View style={{ alignItems: 'center' }}>
+                <Text style={modalStyles.title}>Meditation Completed</Text>
+                <Text style={modalStyles.subtitle}>
+                  Yay! You got {minutesToPoints(time)} points
+                </Text>
+
+                <TouchableOpacity
+                  style={modalStyles.collectBtn}
+                  onPress={() => {
+                    setModalVisible(false);
+                    navigation.navigate('Home');
+                  }}
+                  disabled={updatingPoints}
+                >
+                  <Text style={modalStyles.buttonText}>
+                    {updatingPoints ? 'Loading...' : 'Continue'}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
       </LinearGradient>
     </View>
   );
@@ -155,11 +181,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    // paddingLeft: 31,
-    // paddingRight: 31,
   },
   title: {
-    fontSize: 18,
+    fontSize: 24,
     textAlign: 'center',
     fontWeight: 'bold',
     marginBottom: 8,
@@ -185,5 +209,37 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 10,
     right: 10,
+  },
+});
+
+const modalStyles = StyleSheet.create({
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 0,
+  },
+  modalView: {
+    backgroundColor: 'white',
+    borderRadius: 16,
+    paddingVertical: 16,
+    paddingHorizontal: 24,
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 16,
+    marginBottom: 16,
+  },
+  collectBtn: {
+    backgroundColor: 'rgba(110,255,110,1)',
+    borderRadius: 16,
+    width: '100%',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
   },
 });
