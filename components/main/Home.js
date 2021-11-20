@@ -2,7 +2,7 @@ import React from 'react';
 import { ScrollView, Text } from 'react-native';
 import { StyleSheet, FlatList } from 'react-native';
 import { Card, Paragraph } from 'react-native-paper';
-import { meditations, MeditationItem } from '../../data/meditations';
+import { meditations } from '../../data/meditations';
 import { LinearGradient } from 'expo-linear-gradient';
 
 export default function Home({ navigation }) {
