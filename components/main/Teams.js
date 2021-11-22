@@ -35,66 +35,59 @@ const useMyTeams = (navigation) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const reloadMyTeams = () => {
-    setLoading(true);
-    setMyTeams([]);
-    setError(null);
-    firebase
-      .firestore()
-      .collection('users')
-      .doc(firebase.auth().currentUser.uid)
-      .get()
-      .then(async (querySnapshot) => {
-        const teamIds = querySnapshot.data().teams;
-
-        const batches = [];
-        // convert the teamIds to a new list each having 10 elements
-        // to bypass the limit of 10 items in where() of firestore
-        while (teamIds.length) {
-          const batch = teamIds.splice(
-            0,
-            teamIds.length > 10 ? 10 : teamIds.length
-          );
-          batches.push(
-            new Promise((response) => {
-              firebase
-                .firestore()
-                .collection('teams')
-                .where(firebase.firestore.FieldPath.documentId(), 'in', batch)
-                .get()
-                .then((results) =>
-                  response(
-                    results.docs.map((result) => ({
-                      id: result.id,
-                      ...result.data(),
-                    }))
-                  )
-                );
-            })
-          );
-        }
-
-        Promise.all(batches).then((teamBatches) => {
-          const sortedTeams = teamBatches
-            .flat()
-            .sort((a, b) => a.name.localeCompare(b.name));
-          setMyTeams(sortedTeams);
-          setLoading(false);
-        });
-      })
-      .catch((error) => {
-        console.log('error', error);
-        setError(error);
-        setLoading(false);
-      });
-  };
-
-  useEffect(() => {
-    reloadMyTeams();
-  }, []);
   useEffect(() => {
     const unsubscribe = navigation.addListener('focus', () => {
-      reloadMyTeams();
+      setLoading(true);
+      setMyTeams([]);
+      setError(null);
+      firebase
+        .firestore()
+        .collection('users')
+        .doc(firebase.auth().currentUser.uid)
+        .get()
+        .then(async (querySnapshot) => {
+          const teamIds = querySnapshot.data().teams || [];
+
+          const batches = [];
+          // convert the teamIds to a new list each having 10 elements
+          // to bypass the limit of 10 items in where() of firestore
+          while (teamIds.length) {
+            const batch = teamIds.splice(
+              0,
+              teamIds.length > 10 ? 10 : teamIds.length
+            );
+            batches.push(
+              new Promise((response) => {
+                firebase
+                  .firestore()
+                  .collection('teams')
+                  .where(firebase.firestore.FieldPath.documentId(), 'in', batch)
+                  .get()
+                  .then((results) =>
+                    response(
+                      results.docs.map((result) => ({
+                        id: result.id,
+                        ...result.data(),
+                      }))
+                    )
+                  );
+              })
+            );
+          }
+
+          Promise.all(batches).then((teamBatches) => {
+            const sortedTeams = teamBatches
+              .flat()
+              .sort((a, b) => a.name.localeCompare(b.name));
+            setMyTeams(sortedTeams);
+            setLoading(false);
+          });
+        })
+        .catch((error) => {
+          console.log('error', error);
+          setError(error);
+          setLoading(false);
+        });
     });
     return unsubscribe;
   }, [navigation]);
@@ -165,6 +158,7 @@ const Teams = ({ navigation }) => {
         </View>
       </View>
       <Text style={styles.heading}>My Teams</Text>
+      {/* {loading && <Text style={{ color: '#fff' }}>Loading...</Text>} */}
       {loading && (
         <FlatList
           data={[{ key: 1 }, { key: 2 }, { key: 3 }]}
@@ -175,7 +169,6 @@ const Teams = ({ navigation }) => {
                   style={[
                     teamStyles.image,
                     {
-                      position: 'relative',
                       height: 75,
                       backgroundColor: '#eceff1',
                       overflow: 'hidden',
@@ -192,6 +185,27 @@ const Teams = ({ navigation }) => {
                     }}
                   ></Animated.View>
                 </View>
+                {/* <View
+                  style={[
+                    teamStyles.bottomView,
+                    {
+                      flex: 1,
+                      backgroundColor: 'red',
+                      justifyContent: 'space-evenly',
+                      overflow: 'hidden',
+                    },
+                  ]}
+                >
+                  <View>
+                    <Text style={teamStyles.name}></Text>
+                    <Text style={teamStyles.description}></Text>
+                  </View>
+
+                  <View style={teamStyles.memberCountView}>
+                    <Text style={teamStyles.memberCount}></Text>
+                    <Icon name="user-friends" size={16} color="#fff" />
+                  </View>
+                </View> */}
                 <View
                   style={{
                     height: 75,
@@ -285,6 +299,9 @@ const styles = StyleSheet.create({
     height: '100%',
     paddingLeft: 17,
   },
+  mainView: {
+    // padding: 16,
+  },
   row: {
     flexDirection: 'row',
   },
@@ -332,26 +349,22 @@ const styles = StyleSheet.create({
 
 const teamStyles = StyleSheet.create({
   team: {
+    marginLeft: 10,
     borderRadius: 16,
-    minHeight: 210,
-    width: '95%',
+    minHeight: 220,
+    width: 300,
     overflow: 'hidden',
     marginBottom: 24,
   },
   image: {
     flex: 1,
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
     justifyContent: 'flex-end',
   },
   bottomView: {
-    position: 'absolute',
-    bottom: 0,
     padding: 16,
     flexDirection: 'row',
     justifyContent: 'space-between',
-    backgroundColor: 'rgba(0,0,0,0.7)',
+    backgroundColor: 'black',
   },
   name: {
     color: 'white',

@@ -12,3 +12,8 @@ export const dialogflowConfig = {
   client_x509_cert_url:
     'https://www.googleapis.com/robot/v1/metadata/x509/mellow%40mellow-9kqd.iam.gserviceaccount.com',
 };
+
+export const GoogleOAuth = {
+  expoProxyClientId:
+    '32359953015-6g5sr3rhnslr4rsek1jalg0i50u04776.apps.googleusercontent.com',
+};
