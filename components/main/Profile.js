@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -51,7 +51,19 @@ function Profile(props) {
   const [uploading, setUploading] = useState(false);
   const [didUpload, setDidUpload] = useState(false);
 
-  const { currentUser } = props;
+  // const { currentUser } = props;
+  const [currentUser, setCurrentUser] = useState(props.currentUser);
+  useEffect(() => {
+    console.log('got from firebase');
+    firebase
+      .firestore()
+      .collection('users')
+      .doc(firebase.auth().currentUser.uid)
+      .onSnapshot((doc) => {
+        setCurrentUser(doc.data());
+      });
+  }, []);
+
   const handlePickImage = async () => {
     try {
       if (Platform.OS !== 'web') {
