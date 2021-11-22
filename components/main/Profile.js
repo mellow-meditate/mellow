@@ -165,7 +165,9 @@ function Profile(props) {
                   source={meditationIcon}
                 />
                 <Text style={styles.cardTitle}>Meditation Sessions</Text>
-                <Text style={styles.cardValue}>{currentUser.meditations}</Text>
+                <Text style={styles.cardValue}>
+                  {currentUser.meditations || 0}
+                </Text>
               </View>
               <View style={styles.card}>
                 <Image
@@ -174,14 +176,18 @@ function Profile(props) {
                   source={donationIcon}
                 />
                 <Text style={styles.cardTitle}>Donations</Text>
-                <Text style={styles.cardValue}>{currentUser.donations}</Text>
+                <Text style={styles.cardValue}>
+                  {currentUser.donations || 0}
+                </Text>
               </View>
             </View>
             <View style={styles.row}>
               <View style={styles.card}>
                 <SimpleLineIcons name="clock" size={32} color="#999" />
                 <Text style={styles.cardTitle}>Reliefbot Conversations</Text>
-                <Text style={styles.cardValue}>{currentUser.chatbotConvs}</Text>
+                <Text style={styles.cardValue}>
+                  {currentUser.chatbotConvs || 0}
+                </Text>
               </View>
             </View>
           </View>
@@ -202,8 +208,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   profileImage: {
-    width: 150,
-    height: 150,
+    width: 128,
+    height: 128,
     borderRadius: 75,
     borderWidth: 3,
     borderColor: '#fff',

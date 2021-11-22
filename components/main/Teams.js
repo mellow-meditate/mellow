@@ -46,7 +46,7 @@ const useMyTeams = (navigation) => {
         .doc(firebase.auth().currentUser.uid)
         .get()
         .then(async (querySnapshot) => {
-          const teamIds = querySnapshot.data().teams;
+          const teamIds = querySnapshot.data().teams || [];
 
           const batches = [];
           // convert the teamIds to a new list each having 10 elements

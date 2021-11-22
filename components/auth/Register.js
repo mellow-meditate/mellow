@@ -48,6 +48,7 @@ export class Register extends Component {
             meditations,
             chatbotConvs,
             imageURL,
+            created: firebase.firestore.Timestamp.now(),
           });
         console.log(result);
       })

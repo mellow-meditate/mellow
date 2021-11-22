@@ -1,7 +1,5 @@
-import { StatusBar } from 'expo-status-bar';
 import React, { Component } from 'react';
-import { View, Text, LogBox, TouchableHighlight } from 'react-native';
-
+import { View, Text, LogBox } from 'react-native';
 import firebase from 'firebase/app';
 import 'firebase/auth';
 
@@ -47,6 +45,7 @@ export class App extends Component {
     super(props);
     this.state = {
       loaded: false,
+      loggedIn: false,
     };
   }
 
@@ -65,11 +64,14 @@ export class App extends Component {
       }
     });
   }
+
   render() {
     const { loggedIn, loaded } = this.state;
     if (!loaded) {
       return (
-        <View style={{ flex: 1, justifyContent: 'center' }}>
+        <View
+          style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+        >
           <Text>Loading</Text>
         </View>
       );
