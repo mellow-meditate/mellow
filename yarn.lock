@@ -1664,10 +1664,12 @@
   resolved "https://registry.npmjs.org/@react-native-community/masked-view/-/masked-view-0.1.11.tgz"
   integrity sha512-rQfMIGSR/1r/SyN87+VD8xHHzDYeHaJq6elOSCAD+0iLagXkSI2pfA0LmSXP21uw5i3em7GkkRjfJ8wpqWXZNw==
 
-"@react-native-community/slider@^4.1.12":
-  "integrity" "sha512-CiuLZ2orueBiWHYxfaJF57jQY6HY2Q3z5pdAE4MKH8EqIImr/jgDJrJ/UxOVZHK1Ng9P+XlGIKfVIcuWZ6guuA=="
-  "resolved" "https://registry.npmjs.org/@react-native-community/slider/-/slider-4.1.12.tgz"
-  "version" "4.1.12"
+"@react-native-community/slider@4.1.7":
+  version "4.1.7"
+  resolved "https://registry.yarnpkg.com/@react-native-community/slider/-/slider-4.1.7.tgz#b2c4e9547dcdcbcf3d0a0cda8545abcfdc089859"
+  integrity sha512-zVcxi3chX/Je/3lo8jI/83VpY6DL2h+JWNV8sg6rkxjRTau/8DfM/e98RymH0ujejBkuYX342IKNnxOHRK6KbQ==
+  dependencies:
+    flow-bin "0.113.0"
 
 "@react-native/assets@1.0.0":
   version "1.0.0"
@@ -2846,6 +2848,15 @@ expand-brackets@^2.1.4:
     snapdragon "^0.8.1"
     to-regex "^3.0.1"
 
+expo-app-auth@~11.0.3:
+  version "11.0.3"
+  resolved "https://registry.yarnpkg.com/expo-app-auth/-/expo-app-auth-11.0.3.tgz#ab317ba2730379cdc616c6bda8e3ee0458f4b692"
+  integrity sha512-vw6rWfrVAKFaDB/VShEZYH/Vsd2dYp5BS4Vuq3UARDlrCNwNumO8AualmffTc42k13RTBlKhGoaxUaol/UiTUA==
+  dependencies:
+    "@expo/config-plugins" "^4.0.2"
+    expo-modules-core "~0.4.4"
+    invariant "^2.2.4"
+
 expo-application@~4.0.0:
   version "4.0.0"
   resolved "https://registry.npmjs.org/expo-application/-/expo-application-4.0.0.tgz"
@@ -2921,6 +2932,13 @@ expo-font@~10.0.3:
   dependencies:
     expo-modules-core "~0.4.4"
     fontfaceobserver "^2.1.0"
+
+expo-google-app-auth@~9.0.0:
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/expo-google-app-auth/-/expo-google-app-auth-9.0.0.tgz#c8ee144132d0f8f0db940c576f2d386bbe32069c"
+  integrity sha512-UzL1N8dd2Cm84FkgWCbkkYJv79ptFLescGaOpoJRXlnXVEkmz/iQ7zETmwOsIcq5ISAPXvgrSMb1LniqjgmnGQ==
+  dependencies:
+    expo-app-auth "~11.0.3"
 
 expo-image-picker@^11.0.3:
   version "11.0.3"
@@ -3220,6 +3238,11 @@ firebase@^8.2.3:
     "@firebase/remote-config" "0.1.30"
     "@firebase/storage" "0.4.2"
     "@firebase/util" "0.3.4"
+
+flow-bin@0.113.0:
+  version "0.113.0"
+  resolved "https://registry.yarnpkg.com/flow-bin/-/flow-bin-0.113.0.tgz#6457d250dbc6f71ca51e75f00a96d23cde5d987a"
+  integrity sha512-76uE2LGNe50wm+Jup8Np4FBcMbyy5V2iE+K25PPIYLaEMGHrL1jnQfP9L0hTzA5oh2ZJlexRLMlaPqIYIKH9nw==
 
 flow-parser@0.*, flow-parser@^0.121.0:
   version "0.121.0"
@@ -5314,7 +5337,7 @@ react-native@^0.64.3:
 
 react-navigation-stack@^2.10.4:
   version "2.10.4"
-  resolved "https://registry.npmjs.org/react-navigation-stack/-/react-navigation-stack-2.10.4.tgz"
+  resolved "https://registry.yarnpkg.com/react-navigation-stack/-/react-navigation-stack-2.10.4.tgz#377fd6533f8ae0cf5ca5a435a0115851f010306a"
   integrity sha512-3LE1PFsFV9v4PUlZRATMotqs6H7MOOpIKtjyP+l8D1cyzYmsMQh3EFikeDfzGQUXIvy8VyLAMtcEssicQPYvFA==
   dependencies:
     color "^3.1.3"
