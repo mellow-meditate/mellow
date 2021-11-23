@@ -1,3 +1,11 @@
+/*
+keystore: mellow.jks
+Keystore credentials
+  Keystore password: cf1e3f05d9a24126a68d3cbd0b48c108
+  Key alias:         QG1lbGxvdy1tZWRpdGF0ZS9tZWxsb3c=
+  Key password:      3b655292e71a482c8f1b91ba12bbbc60
+   */
+
 export const dialogflowConfig = {
   type: 'service_account',
   project_id: 'mellow-9kqd',
@@ -15,5 +23,8 @@ export const dialogflowConfig = {
 
 export const GoogleOAuth = {
   expoProxyClientId:
-    '32359953015-6g5sr3rhnslr4rsek1jalg0i50u04776.apps.googleusercontent.com',
+    '32359953015-ko6haov3h18tom2j5gs4fn1ecg934f2p.apps.googleusercontent.com',
+  //'32359953015-6g5sr3rhnslr4rsek1jalg0i50u04776.apps.googleusercontent.com',
+  androidClientId:
+    '32359953015-a3enh92jb3v06mglmnnld8pkunk64gr5.apps.googleusercontent.com',
 };

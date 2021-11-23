@@ -1,0 +1,34 @@
+{
+  "project_info": {
+    "project_number": "294713002680",
+    "project_id": "mellow-meditate",
+    "storage_bucket": "mellow-meditate.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:294713002680:android:3d14d3046e123bcf61024d",
+        "android_client_info": {
+          "package_name": "com.mellow.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCuwsMd_mypM3WNiDf8Mz1ilO8vEdmcCC8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "294713002680-aq388krjsiok83kolpqj43r84421ao0j.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
